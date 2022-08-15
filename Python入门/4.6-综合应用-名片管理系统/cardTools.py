@@ -1,5 +1,5 @@
 def showMenu():
-    # TODO just test
+    # 1.0
     """显示菜单"""
     print("*"*50)
     print("欢迎使用[名片管理系统] V1.0")
