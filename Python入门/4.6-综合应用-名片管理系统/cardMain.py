@@ -1,3 +1,5 @@
+# version 1.0
+
 import cardTools
 
 # 无限循环, 由用户主动决定什么时候退出循环
