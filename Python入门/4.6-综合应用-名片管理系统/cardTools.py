@@ -1,5 +1,6 @@
+# version 1.0
+
 def showMenu():
-    # 1.4
     """显示菜单"""
     print("*"*50)
     print("欢迎使用[名片管理系统] V1.0")
