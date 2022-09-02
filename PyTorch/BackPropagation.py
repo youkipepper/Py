@@ -3,7 +3,7 @@ import torch
 x_data = [1.0, 2.0, 3.0]
 y_data = [2.0, 4.0, 6.0]
 
-w = torch.Tensor([1, 0])
+w = torch.Tensor([1.0])
 w.requires_grad = True
 
 
@@ -28,4 +28,4 @@ for epoch in range(100):
 
     print("progress: ", epoch, l.item())
 
-print("predict (after training)", 4, forward(4).item)
+print("predict (after training)", 4, forward(4).item())

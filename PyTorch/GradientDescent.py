@@ -6,7 +6,6 @@ y_data = [2.0, 4.0, 6.0]
 
 ω = 1.0
 
-
 def forward(x):
     return x*ω
 
