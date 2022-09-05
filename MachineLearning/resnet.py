@@ -1,16 +1,16 @@
-import  torch
-from    torch import  nn
-from    torch.nn import functional as F
-from    torch.utils.data import DataLoader
+import torch
+from torch import nn
+from torch.nn import functional as F
+from torch.utils.data import DataLoader
 
-from    torchvision import datasets
-from    torchvision import transforms
-from    torch import nn, optim
+from torchvision import datasets
+from torchvision import transforms
+from torch import nn, optim
 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 # from    torchvision.models import resnet18
-
 
 
 class ResBlk(nn.Module):
@@ -25,9 +25,11 @@ class ResBlk(nn.Module):
         """
         super(ResBlk, self).__init__()
 
-        self.conv1 = nn.Conv2d(ch_in, ch_out, kernel_size=3, stride=1, padding=1)
+        self.conv1 = nn.Conv2d(
+            ch_in, ch_out, kernel_size=3, stride=1, padding=1)
         self.bn1 = nn.BatchNorm2d(ch_out)
-        self.conv2 = nn.Conv2d(ch_out, ch_out, kernel_size=3, stride=1, padding=1)
+        self.conv2 = nn.Conv2d(
+            ch_out, ch_out, kernel_size=3, stride=1, padding=1)
         self.bn2 = nn.BatchNorm2d(ch_out)
 
         self.extra = nn.Sequential()
@@ -37,7 +39,6 @@ class ResBlk(nn.Module):
                 nn.Conv2d(ch_in, ch_out, kernel_size=1, stride=1),
                 nn.BatchNorm2d(ch_out)
             )
-
 
     def forward(self, x):
         """
@@ -52,8 +53,6 @@ class ResBlk(nn.Module):
         out = self.extra(x) + out
 
         return out
-
-
 
 
 class ResNet18(nn.Module):
@@ -94,9 +93,7 @@ class ResNet18(nn.Module):
         x = x.view(x.size(0), -1)
         x = self.outlayer(x)
 
-
         return x
-
 
 
 def main():
@@ -114,11 +111,10 @@ def main():
     ]), download=True)
     cifar_test = DataLoader(cifar_test, batch_size=batchsz, shuffle=True)
 
-
     x, label = iter(cifar_train).next()
     print('x:', x.shape, 'label:', label.shape)
 
-    device = torch.device('cuda')
+    # device = torch.device('cuda')
     # model = Lenet5().to(device)
     model = ResNet18().to(device)
 
@@ -145,10 +141,8 @@ def main():
             loss.backward()
             optimizer.step()
 
-
         #
         print(epoch, 'loss:', loss.item())
-
 
         model.eval()
         with torch.no_grad():
