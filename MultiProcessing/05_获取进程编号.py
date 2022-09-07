@@ -1,9 +1,12 @@
 # 1. 导入进程包
 import multiprocessing
 import time
+import os
 
 
 def sing(num, name):
+    print("唱歌进程的pid: ", os.getpid())
+    print("唱歌进程的父进程pid: ", os.getppid())
     for i in range(num):
         print(name)
         print("sing...")
@@ -11,6 +14,8 @@ def sing(num, name):
 
 
 def dance(num, name):
+    print("跳舞进程的Pid: ", os.getpid())
+    print("跳舞进程的父进程pid: ", os.getppid())
     for i in range(num):
         print(name)
         print("dance...")
