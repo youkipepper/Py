@@ -130,3 +130,6 @@ dmypy.json
 instacart/
 cifar/
 FBlocation/
+zshrc
+.zshrc
+*.deb
