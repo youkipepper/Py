@@ -10,6 +10,7 @@ conn = pymysql.connect(
     database='bridge'  # 数据库名称
 )
 
+
 def get_table_names():
     """
     获取所有以'table'开头的表名
@@ -17,21 +18,24 @@ def get_table_names():
     cursor = conn.cursor()
     cursor.execute("SHOW TABLES")
     tables = cursor.fetchall()
-    table_names = [table[0] for table in tables if table[0].startswith('table')]
+    table_names = [table[0]
+        for table in tables if table[0].startswith('table')]
     return table_names
+
 
 def process_data(table_name):
     """
     处理给定表中的数据并生成频谱图
     """
     cursor = conn.cursor()
-    cursor.execute(f"SELECT y_offset, video_record_time, test_point_code FROM {table_name}")
+    cursor.execute(
+        f"SELECT y_offset, video_record_time, test_point_code FROM {table_name}")
     data = cursor.fetchall()
 
     # 获取所需数据范围内的记录
     selected_data = []
     for row in data:
-        if 10 <= row[1].hour < 12: # 时间在上午10点到12点之间
+        if 10 <= row[1].hour < 12:  # 时间在上午10点到12点之间
             selected_data.append(row)
 
     # 对于每个测点编号
@@ -48,7 +52,18 @@ def process_data(table_name):
 
         # 进行傅立叶变换
         fft_values = np.fft.fft(y_values)
-        frequency = np.fft.fftfreq(len(y_values))
+
+
+        # 计算采样频率和时间间隔
+        sampling_rate = 1 / (len(y_values) * 0.05)
+        time_interval = 1 / sampling_rate
+
+        # 确定目标频率范围为20Hz
+        target_frequency_range = 20
+        target_num_samples = int(target_frequency_range * time_interval)
+
+        # 获取新的频率数组
+        frequency = np.fft.fftfreq(len(y_values), d=time_interval)[:target_num_samples]
 
         # 绘制频谱图
         plt.plot(frequency, np.abs(fft_values))
