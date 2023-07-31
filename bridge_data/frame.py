@@ -53,9 +53,13 @@ def process_data(table_name):
         # 进行傅立叶变换
         fft_values = np.fft.fft(y_values)
 
+        # 定义固定采样率为20Hz
+        sampling_rate = 20
 
-        # 计算采样频率和时间间隔
-        sampling_rate = 1 / (len(y_values) * 0.05)
+        # 进行傅立叶变换
+        fft_values = np.fft.fft(y_values)
+
+        # 计算时间间隔
         time_interval = 1 / sampling_rate
 
         # 确定目标频率范围为20Hz
@@ -64,6 +68,7 @@ def process_data(table_name):
 
         # 获取新的频率数组
         frequency = np.fft.fftfreq(len(y_values), d=time_interval)[:target_num_samples]
+
 
         # 绘制频谱图
         plt.plot(frequency, np.abs(fft_values))
