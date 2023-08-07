@@ -69,6 +69,9 @@ def process_data(table_name):
         # 获取新的频率数组
         frequency = np.fft.fftfreq(len(y_values), d=time_interval)[:target_num_samples]
 
+        # 在绘制之前，确保frequency和fft_values具有相同的长度
+        frequency = frequency[:len(y_values)]
+        fft_values = fft_values[:len(y_values)]
 
         # 绘制频谱图
         plt.plot(frequency, np.abs(fft_values))
