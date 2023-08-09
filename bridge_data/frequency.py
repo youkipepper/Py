@@ -11,6 +11,10 @@ def connect_to_db():
         database='bridge'
     )
 
+# Print success message
+if connect_to_db:
+    print("Connected to the database successfully!")
+
 def get_table_names(connection):
     """
     获取所有以'table'开头的表名
