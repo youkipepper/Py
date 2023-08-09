@@ -19,9 +19,8 @@ def get_table_names():
     cursor.execute("SHOW TABLES")
     tables = cursor.fetchall()
     table_names = [table[0]
-        for table in tables if table[0].startswith('table')]
+                   for table in tables if table[0].startswith('table')]
     return table_names
-
 
 def process_data(table_name):
     """
@@ -50,38 +49,47 @@ def process_data(table_name):
                 x_values.append(row[1])
                 y_values.append(row[0])
 
-        # 进行傅立叶变换
-        fft_values = np.fft.fft(y_values)
-
-        # 定义固定采样率为20Hz
+        # 确定固定采样率为20Hz
         sampling_rate = 20
-
-        # 进行傅立叶变换
-        fft_values = np.fft.fft(y_values)
 
         # 计算时间间隔
         time_interval = 1 / sampling_rate
 
-        # 确定目标频率范围为20Hz
-        target_frequency_range = 20
-        target_num_samples = int(target_frequency_range * time_interval)
+        # 进行傅立叶变换
+        fft_values = np.fft.fft(y_values)
 
-        # 获取新的频率数组
-        frequency = np.fft.fftfreq(len(y_values), d=time_interval)[:target_num_samples]
-
-        # 在绘制之前，确保frequency和fft_values具有相同的长度
-        frequency = frequency[:target_num_samples]
-        fft_values = fft_values[:target_num_samples]
+        # 确定目标频率范围
+        target_frequency_range = np.linspace(0, sampling_rate / 2, int(len(y_values) / 2))
+        
+        # # 绘制频谱图
+        # plt.plot(target_frequency_range, np.abs(fft_values[:int(len(y_values)/2)]))
+        # plt.xlabel('Frequency')
+        # plt.ylabel('Amplitude')
+        # plt.title(f'Frequency Spectrum - Test Point {test_point}')
+        # plt.savefig(f'{table_name}_{test_point}_spectrum.png')  # 保存频谱图为PNG文件
+        # plt.close()
 
         # 绘制频谱图
-        plt.plot(frequency, np.abs(fft_values))
+        plt.plot(target_frequency_range, np.abs(fft_values[:int(len(y_values)/2)]))
         plt.xlabel('Frequency')
         plt.ylabel('Amplitude')
         plt.title(f'Frequency Spectrum - Test Point {test_point}')
+        
+        # 寻找非零横坐标下的纵坐标最值点并标出
+        non_zero_indices = np.where((target_frequency_range >= 4) & (target_frequency_range <= 8))
+        max_value_index = np.argmax(np.abs(fft_values[non_zero_indices]))
+        max_x = target_frequency_range[non_zero_indices][max_value_index]
+        max_y = np.abs(fft_values[non_zero_indices][max_value_index])
+        # plt.annotate(f'Max: ({max_x:.2f}, {max_y:.2f})', xy=(max_x, max_y), xytext=(max_x + 5, max_y + 10),
+        #              arrowprops=dict(facecolor='black', arrowstyle='->'))
+        plt.text(max_x, max_y, f'Max: ({max_x:.2f}, {max_y:.2f})')
+
         plt.savefig(f'{table_name}_{test_point}_spectrum.png')  # 保存频谱图为PNG文件
         plt.close()
 
     cursor.close()
+
+
 
 # 获取所有以'table'开头的表名
 table_names = get_table_names()
