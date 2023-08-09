@@ -10,6 +10,10 @@ conn = pymysql.connect(
     database='bridge'  # 数据库名称
 )
 
+# Print success message
+if conn:
+    print("Connected to the database successfully!")
+
 
 def get_table_names():
     """
