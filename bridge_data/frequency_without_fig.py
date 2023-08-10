@@ -31,13 +31,14 @@ def get_table_names(connection):
     return table_names
 
 
-def process_data(connection, cursor, table_name):
+def process_data(connection, table_name):
     """
     处理给定表中的数据并上传到frequency表
     """
-    cursor.execute(
-        f"SELECT y_offset, video_record_time, test_point_code FROM {table_name}")
-    data = cursor.fetchall()
+    with connection.cursor() as cursor:
+        cursor.execute(
+            f"SELECT y_offset, video_record_time, test_point_code FROM {table_name}")
+        data = cursor.fetchall()
 
     # 计算目标频率范围
     sampling_rate = 20
@@ -96,7 +97,7 @@ def main():
     with connection.cursor() as cursor:
         # 对每个表执行操作
         for table_name in table_names:
-            process_data(connection, cursor, table_name)
+            process_data(connection, table_name)
 
     # 关闭数据库连接
     connection.close()
