@@ -39,6 +39,7 @@ def process_data(connection, table_name):
         cursor.execute(
             f"SELECT y_offset, video_record_time, test_point_code FROM {table_name}")
         data = cursor.fetchall()
+    cursor.close()
 
     # 计算目标频率范围
     sampling_rate = 20
@@ -70,7 +71,7 @@ def process_data(connection, table_name):
 
                     # 寻找非零横坐标下的纵坐标最值点并上传到数据库
                     non_zero_indices = np.where(
-                        (target_frequency_range >= 6.1) & (target_frequency_range <= 6.5))
+                        (target_frequency_range >= 4) & (target_frequency_range <= 8))
                     max_value_index = np.argmax(
                         np.abs(fft_values[non_zero_indices]))
                     max_x = target_frequency_range[non_zero_indices][max_value_index]
@@ -79,12 +80,16 @@ def process_data(connection, table_name):
 
                     time_value = selected_data[0][1].replace(
                         minute=minute, second=0, microsecond=0)
-                    insert_query = f"INSERT INTO frequency (test_point_code, time, 1st_order_frequency, 1st_order_alpha) VALUES ('{test_point}', '{time_value}', {max_x}, {max_y})"
-                    cursor.execute(insert_query)
-                    connection.commit()
+                    
+                    with connection.cursor() as cursor:
+                        insert_query = f"INSERT INTO frequency (test_point_code, time, 1st_order_frequency, 1st_order_alpha) VALUES ('{test_point}', '{time_value}', {max_x}, {max_y})"
+                        cursor.execute(insert_query)
+                        connection.commit()
 
                     print(
                         f"Uploaded data for Test Point {test_point} at {time_value}")
+                    
+
 
 
 def main():
