@@ -74,7 +74,7 @@ def process_data(connection, table_name):
                         (target_frequency_range >= 6) & (target_frequency_range <= 7))
                     max_value_index = np.argmax(
                         np.abs(fft_values[non_zero_indices]))
-                    max_x = target_frequency_range[non_zero_indices][max_value_index]
+                    max_x = target_frequency_range[non_zero_indices][max_value_index]/2
                     max_y = np.abs(
                         fft_values[non_zero_indices][max_value_index])
 
