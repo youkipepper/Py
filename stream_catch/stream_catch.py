@@ -71,3 +71,6 @@ if check_stream_url(stream_url):
     start_recording(stream_url, serial_number)
 else:
     print("直播地址无效或无法访问。")
+
+
+    
